@@ -31,3 +31,6 @@ bin/
 ../java-toolkit/*
 
 ../storage/
+
+hcl-demo.iml
+.idea/
