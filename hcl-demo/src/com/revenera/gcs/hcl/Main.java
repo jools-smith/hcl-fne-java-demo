@@ -3,7 +3,6 @@ package com.revenera.gcs.hcl;
 import com.flexnet.licensing.client.ICapabilityResponseData;
 import com.flexnet.licensing.client.IFeature;
 import com.flexnet.licensing.client.ILicense;
-import com.flexnet.licensing.client.IResponseStatus;
 import com.flexnet.lm.FlxException;
 import com.revenera.gcs.hcl.fne.Client;
 import com.revenera.gcs.hcl.fne.ClientFactory;
@@ -11,78 +10,10 @@ import com.revenera.gcs.hcl.fne.ClientFactory;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-class IO {
-  static void header(final String header) {
-    System.out.println(header);
-    System.out.println(header.chars().mapToObj(i -> "-").collect(Collectors.joining()));
-  }
-
-  static String concatenate(final Object...parts) {
-    return Arrays.stream(parts).map(Object::toString).collect(Collectors.joining(" | "));
-  }
-
-  static void printFeatureCorrection(final String caption, final List<IFeature> features) {
-
-    header(caption);
-
-    System.out.println("count = " + features.size());
-    for (final IFeature feature : features) {
-      System.out.println(concatenate(feature.getName(),
-                                     feature.getVersion(),
-                                     feature.getCount(),
-                                     feature.getStartDate(),
-                                     feature.getExpiration(),
-                                     feature.getAcquisitionStatus(),
-                                     feature.getAvailableAcquisitionCount()));
-    }
-    System.out.println();
-  }
-
-  static void printLicenseCollection(final String caption, final List<ILicense> licenses) {
-
-    header(caption);
-    System.out.println("count = " + licenses.size());
-    for (final ILicense license : licenses) {
-      System.out.println(concatenate(license.getName(),
-                                     license.getVersion(),
-                                     license.getCount(),
-                                     license.getStartDate(),
-                                     license.getExpiration()));
-    }
-    System.out.println();
-  }
-
-  static void printResponseDetails(final ICapabilityResponseData response) throws FlxException {
-
-    System.out.println("Capability Response Details");
-    System.out.println("---------------------------");
-
-    final List<IFeature> features = response.getFeatures();
-    System.out.println("feature count = " + features.size());
-    for (final IFeature feature : features) {
-      System.out.println(concatenate(feature.getName(),
-                                     feature.getVersion(),
-                                     feature.getCount(),
-                                     feature.getStartDate(),
-                                     feature.getExpiration()));
-    }
-
-    final List<IResponseStatus> statuses = response.getResponseStatus();
-    System.out.println("response status count = " + statuses.size());
-    for (final IResponseStatus status : statuses) {
-      status.getDetails();
-      System.out.println(concatenate(status.getCode(), status.getStatus(), status.getCategory(), status.getDetails()));
-    }
-    System.out.println();
-  }
-}
 public class Main {
-
-
 
   public static void main(final String...args) {
     try {
@@ -103,10 +34,12 @@ public class Main {
 
       IO.printFeatureCorrection("Features in Trusted Storage", client.manager().getFeaturesFromTrustedStorage(false));
 
+      // activate license
       final ICapabilityResponseData response = client.callHome(url, "6ba6-6083-276d-4406-9296-981f-1cd0-e888");
 
       IO.printResponseDetails(response);
 
+      // get features in TS
       final List<IFeature> features = client.manager().getFeaturesFromTrustedStorage(false);
       IO.printFeatureCorrection("Features in Trusted Storage", features);
 
@@ -116,14 +49,34 @@ public class Main {
       }
       IO.printLicenseCollection("Acquired Licenses", client.manager().getLicenses());
 
-      // return all licenses
+      // return all licenses -- the hard way
       for (final IFeature feature : features) {
-        client.release(feature.getName());
+        client.returnLicense(feature.getName());
       }
+
+//      for (final ILicense license : client.manager().getLicenses()) {
+//        client.manager().returnLicense(license);
+//      }
+
+
+//       client.manager().returnAllLicenses();
+
       IO.printLicenseCollection("Acquired Licenses", client.manager().getLicenses());
+
+      client.acquire("dummy", "0", 1);
+    }
+    catch (final FlxException e) {
+      IO.header("Licensing Exception");
+      IO.print(IO.concatenate(e.getClass().getSimpleName(), e.getMessage(), e.getDiagnosticMessage()));
+
+      Optional.ofNullable(e.getArguments()).ifPresent(value -> {
+        IO.print(IO.concatenate(value));
+      });
+
     }
     catch (final Throwable t) {
-      t.printStackTrace(System.err);
+      IO.header("Unexpected Exception");
+      IO.header(IO.concatenate(t.getClass().getName(), t.getMessage()));
     }
     finally {
       System.out.println("cheerio...");

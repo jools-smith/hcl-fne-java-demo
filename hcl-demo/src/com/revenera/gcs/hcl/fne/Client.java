@@ -34,13 +34,13 @@ public class Client {
     return manager().acquire(feature, version, count);
   }
 
-  public void release(final ILicense license) throws FlxException {
+  public void returnLicense(final ILicense license) throws FlxException {
     manager().releaseLicense(license);
   }
 
-  public void release(final String feature) throws FlxException {
+  public void returnLicense(final String feature) throws FlxException {
      for(final ILicense license : new ArrayList<>(manager().getLicenses(feature)))    {
-       release(license);
+       returnLicense(license);
      }
   }
 
