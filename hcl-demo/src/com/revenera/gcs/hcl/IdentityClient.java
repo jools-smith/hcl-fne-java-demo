@@ -227,8 +227,7 @@ public class IdentityClient {
                 "hpGAcu9PvQd2zMEROZDC7y41GSBAb8m3r+9w+iRKQzDXHhmj7z/lapyAAhF8QfAxIZgOCbGCpxBH"+
                 "qN+IcceVJwsv++OcQxGOfqOwgfEOIQpv6oQMKyCQ4IYq8GB6EA4J8IUvVpFQoSeSlCgLUQFaTyZx"+
                 "yFYGby4E210DCs/g71X5IJHJr1DJFEwkj+MLKg1jr4Yqw7vgUSdrEdCnDgnPbwwkOjL6JNKwYAtw"+
-                "LdMhD2+1tKpksTa2CApPdzZHOoAP59dXWXEopiEx5r8HLz4brKtA"+
-                "";
+                "LdMhD2+1tKpksTa2CApPdzZHOoAP59dXWXEopiEx5r8HLz4brKtA";
 
             IDENTITY_DATA = Base64.getDecoder().decode( identity_data_base64 );
         }

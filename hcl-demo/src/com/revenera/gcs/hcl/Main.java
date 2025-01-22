@@ -2,7 +2,6 @@ package com.revenera.gcs.hcl;
 
 import com.flexnet.licensing.client.ICapabilityResponseData;
 import com.flexnet.licensing.client.IFeature;
-import com.flexnet.licensing.client.ILicense;
 import com.flexnet.lm.FlxException;
 import com.revenera.gcs.hcl.fne.Client;
 import com.revenera.gcs.hcl.fne.ClientFactory;
@@ -32,7 +31,7 @@ public class Main {
               .withHostType("FLX_CLIENT")
               .initializeClient();
 
-      IO.printFeatureCorrection("Features in Trusted Storage", client.manager().getFeaturesFromTrustedStorage(false));
+      IO.printFeatureCollection("Features in Trusted Storage", client.manager().getFeaturesFromTrustedStorage(false));
 
       // activate license
       final ICapabilityResponseData response = client.callHome(url, "6ba6-6083-276d-4406-9296-981f-1cd0-e888");
@@ -41,7 +40,7 @@ public class Main {
 
       // get features in TS
       final List<IFeature> features = client.manager().getFeaturesFromTrustedStorage(false);
-      IO.printFeatureCorrection("Features in Trusted Storage", features);
+      IO.printFeatureCollection("Features in Trusted Storage", features);
 
       // acquire all features
       for (final IFeature feature : features) {

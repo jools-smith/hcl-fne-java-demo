@@ -24,15 +24,19 @@ public class IO {
     print(header.chars().mapToObj(i -> "-").collect(Collectors.joining()));
   }
 
+  static void header(final String header, final List<?>list) {
+    header(header);
+    print("size = " + list.size());
+  }
+
   static String concatenate(final Object...parts) {
     return Arrays.stream(parts).map(Object::toString).collect(Collectors.joining(" | "));
   }
 
-  static void printFeatureCorrection(final String caption, final List<IFeature> features) {
+  static void printFeatureCollection(final String caption, final List<IFeature> features) {
 
-    header(caption);
+    header(caption,features);
 
-    print("count = " + features.size());
     for (final IFeature feature : features) {
       print(concatenate(feature.getName(),
                                      feature.getVersion(),
@@ -47,35 +51,34 @@ public class IO {
 
   static void printLicenseCollection(final String caption, final List<ILicense> licenses) {
 
-    header(caption);
-    print("count = " + licenses.size());
+    header(caption, licenses);
+
     for (final ILicense license : licenses) {
       print(concatenate(license.getName(),
-                                     license.getVersion(),
-                                     license.getCount(),
-                                     license.getStartDate(),
-                                     license.getExpiration()));
+                        license.getVersion(),
+                        license.getCount(),
+                        license.getStartDate(),
+                        license.getExpiration()));
     }
     lf();
   }
 
   static void printResponseDetails(final ICapabilityResponseData response) throws FlxException {
-
-    header("Capability Response Details");
     final List<IFeature> features = response.getFeatures();
-    print("feature count = " + features.size());
+
+    header("Capability Response Details", features);
     for (final IFeature feature : features) {
       print(concatenate(feature.getName(),
-                                     feature.getVersion(),
-                                     feature.getCount(),
-                                     feature.getStartDate(),
-                                     feature.getExpiration()));
+                        feature.getVersion(),
+                        feature.getCount(),
+                        feature.getStartDate(),
+                        feature.getExpiration()));
     }
     lf();
 
     final List<IResponseStatus> statuses = response.getResponseStatus();
-    header("Capability Response Status");
-    print("response status count = " + statuses.size());
+
+    header("Capability Response Status", statuses);
     for (final IResponseStatus status : statuses) {
       print(concatenate(status.getCode(), status.getStatus(), status.getCategory(), status.getDetails()));
     }
