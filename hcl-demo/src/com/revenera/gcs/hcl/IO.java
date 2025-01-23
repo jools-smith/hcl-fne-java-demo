@@ -30,7 +30,10 @@ public class IO {
   }
 
   static String concatenate(final Object...parts) {
-    return Arrays.stream(parts).map(Object::toString).collect(Collectors.joining(" | "));
+
+    return Arrays.stream(parts)
+                 .map(Object::toString)
+                 .collect(Collectors.joining(" | "));
   }
 
   static void printFeatureCollection(final String caption, final List<IFeature> features) {
@@ -38,13 +41,14 @@ public class IO {
     header(caption,features);
 
     for (final IFeature feature : features) {
-      print(concatenate(feature.getName(),
-                                     feature.getVersion(),
-                                     feature.getCount(),
-                                     feature.getStartDate(),
-                                     feature.getExpiration(),
-                                     feature.getAcquisitionStatus(),
-                                     feature.getAvailableAcquisitionCount()));
+      print(concatenate(
+        feature.getName(),
+        feature.getVersion(),
+        feature.getCount(),
+        feature.getStartDate(),
+        feature.getExpiration(),
+        feature.getAcquisitionStatus(),
+        feature.getAvailableAcquisitionCount()));
     }
     lf();
   }
@@ -54,11 +58,12 @@ public class IO {
     header(caption, licenses);
 
     for (final ILicense license : licenses) {
-      print(concatenate(license.getName(),
-                        license.getVersion(),
-                        license.getCount(),
-                        license.getStartDate(),
-                        license.getExpiration()));
+      print(concatenate(
+        license.getName(),
+        license.getVersion(),
+        license.getCount(),
+        license.getStartDate(),
+        license.getExpiration()));
     }
     lf();
   }
@@ -68,11 +73,12 @@ public class IO {
 
     header("Capability Response Details", features);
     for (final IFeature feature : features) {
-      print(concatenate(feature.getName(),
-                        feature.getVersion(),
-                        feature.getCount(),
-                        feature.getStartDate(),
-                        feature.getExpiration()));
+      print(concatenate(
+        feature.getName(),
+        feature.getVersion(),
+        feature.getCount(),
+        feature.getStartDate(),
+        feature.getExpiration()));
     }
     lf();
 
@@ -80,7 +86,11 @@ public class IO {
 
     header("Capability Response Status", statuses);
     for (final IResponseStatus status : statuses) {
-      print(concatenate(status.getCode(), status.getStatus(), status.getCategory(), status.getDetails()));
+      print(concatenate(
+              status.getCode(),
+              status.getStatus(),
+              status.getCategory(),
+              status.getDetails()));
     }
     lf();
   }
